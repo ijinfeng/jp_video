@@ -7,24 +7,32 @@
         return distitle;
     }
 
-    function isVideo(title) {
-        let [f, _] = title.split('：');
-        return f.includes('视频')
+    function isVideo(item) {
+        const icon = item.getElementsByClassName('full-screen-activity-icon')[0];
+        const ot = icon.getAttribute('original-title');
+        console.log(`---------${ot}`);
+        return ot === '音视频教材';
     }
 
     function findCurrentPlayObj() {
         let currentItem = null;
         let nextItem = null;
         let targetIndex = 0;
-        let videoTitles = [];
         let items = document.getElementsByClassName('activity-menu-item')
-        for (let index = 0; index < items.length; index++) {
-            const item = items[index];
+        let videoItems = []
+        for (const item of items) {
+            if (isVideo(item) == false) {
+                continue;
+            }
+            videoItems.push(item)
+        }
+        for (let index = 0; index < videoItems.length; index++) {
+            const item = videoItems[index];
             currentItem = nextItem;
             nextItem = item;
             let distitle = readTitleFromItem(item);
-            if (distitle && isVideo(distitle)) {
-                videoTitles.push(distitle)
+            console.log(`++++++++${distitle}`);
+            if (distitle) {
                 // find lock
                 let lock = item.querySelector('.is-locked');
                 if (lock) {
@@ -34,15 +42,15 @@
                 }
             }
         }
-        console.log(`Current title of video is ${videoTitles[targetIndex]}`);
-        if (targetIndex >= items.length) {
+        console.log(`Current title of video is ${readTitleFromItem(currentItem)}`);
+        if (targetIndex >= videoItems.length) {
             console.log('There are no more videos to play!');
         } else {
             console.log(`The next video is ${readTitleFromItem(nextItem)}`);
         }
         return {
             current: currentItem,
-            items: items,
+            items: videoItems,
             index: targetIndex
         };
     }
@@ -72,17 +80,12 @@
                 // hover
                 let nextItem = getNextPlayItem(playObj);
                 // 移动到锁上才会解锁
-                let locks = nextItem.querySelectorAll('.right');
+                // TODO: 查找hover之后就解锁的方式
+                let locks = nextItem.querySelectorAll('.activity-prerequisites');
                 for (const lock of locks) {
                     if (lock) {
                         let hover = new Event('mouseenter');
-                        let f = lock.getAttribute('ng-mouseenter');
-                        console.log(`+++++${f}`);
-                        if (f) {
-                            console.log('Find a lock, remove it!');
-                            f(hover);
-                        }
-                        
+                        lock.dispatchEvent(hover)
                     }
                 }
                 
@@ -126,8 +129,3 @@
     clickTargetItem(playObj.current);
     startPlayVideo(playObj);
 })();
-
-const app = angular.module('activity', []);
-app.controller('ViewActivityCtrl', ($scope) => {
-    console.log($scope.globalData.course.module);
-})
