@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box {
+            position: fixed;
+            right: 30px;
+            bottom: 100px;
+            width: 100px;
+            height: 120px;
+            background-color: #f4f5f6;
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .title {
+            color: #333333;
+            line-height: 30px;
+            background-color: antiquewhite;
+        }
+
+        input {
+            width: 30px;
+        }
+
+        .play {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <p class="title">JP-Player</p>
+        <label for="rate" class="rate-label">
+            倍数
+            <input type="text" value="16">
+        </label>
+        <button class="play">开始播放</button>
+    </div>
+</body>
+</html>

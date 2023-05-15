@@ -1,3 +1,17 @@
+// ==UserScript==
+// @name         国开一网一平台视频自动化播放，快进，解放你的双手
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  支持最高16倍倍速播放，播完后自动播放下一集
+// @author       ijinfeng
+// @match        *://menhu.pt.ouchn.cn/*
+// @match        *://lms.ouchn.cn/course/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=baidu.
+// @grant        GM_addStyle
+// @grant        GM_log
+// ==/UserScript==
+
+
 (function () {
     function readTitleFromItem(item) {
         if (!item) return null;
@@ -193,13 +207,59 @@
                         // });
     }
 
-
-    const playObj = findCurrentPlayObj();
-
-    if (playObj.current) {
-        clickTargetItem(playObj.current);
-        startPlayVideo(playObj);
+    /// 用户交互界面
+    function createUserInterface() {
+        let box = document.createElement('div');
+        box.className = 'box';
+        box.innerHTML = `
+        <p class="title">JP-Player</p>
+        <label for="rate" class="rate-label">
+            倍数
+            <input type="text" value="16">
+        </label>
+        <button class="play">开始播放</button>
+        `
+        document.appendChild(box);
     }
+
+    function setUserCss() {
+        let css = `
+        .box {
+            position: fixed;
+            right: 30px;
+            bottom: 100px;
+            width: 100px;
+            height: 120px;
+            background-color: #f4f5f6;
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .title {
+            color: #333333;
+            line-height: 30px;
+            background-color: antiquewhite;
+        }
+
+        input {
+            width: 30px;
+        }
+
+        .play {
+            margin-top: 10px;
+        }
+        `
+        GM_addStyle(css)
+    }
+
+
+    // const playObj = findCurrentPlayObj();
+
+    // if (playObj.current) {
+    //     clickTargetItem(playObj.current);
+    //     startPlayVideo(playObj);
+    // }
 
 
 
@@ -208,5 +268,18 @@
     //     let nextItem = playObj.items[playObj.index + 1];
     //     tryRemoveLock(nextItem);
     // }
+
+    console.log('Welcome to use ef_video script!');
+
+    createUserInterface();
+
+    isElementLoaded('video').then(() => {
+        console.log('Video is loaded!')
+        const playObj = findCurrentPlayObj();
+        if (playObj.current) {
+            clickTargetItem(playObj.current);
+            startPlayVideo(playObj);
+        }    
+    })
 
 })();
