@@ -188,16 +188,20 @@
     // 继续播放，这种情况一般是失去焦点导致的
     function resumePlayer() {
         console.log('resume player');
-        isElementLoaded('.mvp-toggle-play').then((selector) => {
-            let playBtn = document.querySelector(".mvp-toggle-play");
-            let clickEvent = new Event('click');
-            playBtn.dispatchEvent(clickEvent);
+        isElementLoaded('.mvp-toggle-play').then(() => {
             isElementLoaded('video').then(() => {
                 let video = document.querySelector('video');
                 console.log(`Find video player is paused: ${video.paused}, rate: ${video.playbackRate}`);
-                if (video.paused) {
-                    video.play();     
+                if (!video.paused) {
+                    return;
                 }
+                let playBtn = document.querySelector(".mvp-toggle-play");
+                let clickEvent = new Event('click');
+                playBtn.dispatchEvent(clickEvent);
+                if (!video.paused) {
+                    return;
+                }
+                video.play();     
             });
         });
     }
@@ -240,7 +244,7 @@
                 let target = lock.querySelector('.font-thin-lock');
                 let isDefaultPrevented = function Ae() { return !1; }
                 let originalEvent = new MouseEvent('mouseover', {
-                    view: window,
+                    view: unsafeWindow,
                     bubbles: true,
                     cancelable: true,
                     fromElement: item,
