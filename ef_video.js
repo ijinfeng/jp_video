@@ -291,7 +291,7 @@
         let box = document.createElement('div');
         box.className = 'jp-box';
         box.innerHTML = `
-        <p class="jp-title">自动播放脚本</p>
+        <p class="jp-title">国开网课脚本</p>
         <label for="rate" class="jp-rate-label">
             倍数
             <input type="text" value="16" class="jp-rate-input">
