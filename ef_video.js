@@ -153,12 +153,18 @@
         const isExsitLock = exsitLock(nextItem);
         if (isExsitLock) {
             console.log('Find a lock in this video item, try remove it.');
-            // 移动到锁上才会解锁
-            // TODO: 查找hover之后就解锁的方式
             tryRemoveLock(nextItem);
+            console.log('🚌 Wait 1 second to continue...');
+            let t = setTimeout(() => {
+                console.log('OK, start the next step!');
+                selectedTargetItemAt(currentPlayObj.index + 1);
+                startPlayVideo();
+                logCurrentPlayObj();
+                clearTimeout(t);
+            }, 1000);
         } else {
             selectedTargetItemAt(currentPlayObj.index + 1);
-            startPlayVideo(currentPlayObj);
+            startPlayVideo();
             logCurrentPlayObj();
         }
     }
@@ -168,7 +174,8 @@
         return lock != undefined || lock != null;
     }
 
-    function startPlayVideo(playObj) {
+    function startPlayVideo() {
+        if (!currentPlayObj) return;
         isElementLoaded('.mvp-toggle-play').then(() => {
             let playBtn = document.querySelector(".mvp-toggle-play");
             let clickEvent = new Event('click');
@@ -177,7 +184,7 @@
             isElementLoaded('video').then(() => {
                 let video = document.querySelector('video');
                 video.currentTime = 0;
-                video.playbackRate = playObj.playrate;
+                video.playbackRate = currentPlayObj.playrate;
                 video.play();
                 video.removeEventListener('ended', playEnded);
                 video.addEventListener('ended', playEnded);
@@ -235,57 +242,7 @@
         let locks = item.querySelectorAll('.right');
         for (const lock of locks) {
             if (lock) {
-                let ng_lock = angular.element(lock);
-                let ng_lock_scope = ng_lock.scope();
-                ng_lock_scope.resetPrerequisitesTipsPosition = (e) => {
-                    console.log(e);
-                }
-
-                let target = lock.querySelector('.font-thin-lock');
-                let isDefaultPrevented = function Ae() { return !1; }
-                let originalEvent = new MouseEvent('mouseover', {
-                    view: unsafeWindow,
-                    bubbles: true,
-                    cancelable: true,
-                    fromElement: item,
-                    relatedTarget: item,
-                    srcElement: target,
-                    target: target,
-                    toElement: target
-                });
-
-                ng_lock_scope.$apply(function () {
-                    let event = jQuery.Event('mouseenter', {
-                        'relatedTarget': item,
-                        'target': target,
-                        'currentTarget': lock,
-                        'originalEvent': originalEvent,
-                        'isDefaultPrevented': isDefaultPrevented
-                    });
-                    ng_lock.triggerHandler(event);
-                    console.log(`Try remove lock: [lock]`);
-                });
-
-                let prerequisites = lock.querySelectorAll('.activity-prerequisites');
-                prerequisites.forEach(function (p) {
-                    let ng_p = angular.element(p);
-                    let ng_p_scope = ng_p.scope();
-                    ng_p_scope.resetPrerequisitesTipsPosition = (e) => {
-                        console.log(e);
-                    }
-
-                    ng_p_scope.$apply(function () {
-                        let event = jQuery.Event('mouseenter', {
-                            'relatedTarget': item,
-                            'target': target,
-                            'currentTarget': p,
-                            'originalEvent': originalEvent,
-                            'isDefaultPrevented': isDefaultPrevented
-                        });
-                        ng_p.triggerHandler(event);
-                        console.log(`Try remove lock: [prerequisites]`);
-                    });
-                });
+                lock.innerHTML = "";
             }
         }
     }
@@ -378,7 +335,7 @@
             currentPlayObj = playObj;
             playObj.playrate = state.rate;
             selectedTargetItemAt(playObj.index);
-            startPlayVideo(playObj);
+            startPlayVideo();
         })
     }
 
@@ -394,7 +351,7 @@
             currentPlayObj = playObj;
             playObj.playrate = state.rate;
             selectedTargetItemAt(playObj.index);
-            startPlayVideo(playObj);
+            startPlayVideo();
         })
     }
 
