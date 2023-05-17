@@ -1,14 +1,13 @@
 // ==UserScript==
-// @name         国开大学网课一网一平台视频自动化播放，快进，解放你的双手
-// @namespace    http://tampermonkey.net/
+// @name         国开大学视频网课，一网一平台自动化脚本
+// @namespace    https://github.com/ijinfeng/jp_video
 // @version      1.0
-// @description  支持最高16倍倍速播放，播完后自动播放下一集
+// @description  国开大学网课一网一平台视频自动化播放，快进，解放你的双手🔥支持最高16倍倍速播放，播完后自动播放下一集
 // @author       jinfeng
 // @match        *://menhu.pt.ouchn.cn/*
 // @match        *://lms.ouchn.cn/course/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=baidu.
 // @grant        GM_addStyle
-// @grant        GM_log
 // @grant        unsafeWindow
 // ==/UserScript==
 
@@ -249,10 +248,6 @@
         box.className = 'jp-box';
         box.innerHTML = `
         <p class="jp-title">国开网课脚本</p>
-        <label class="jp-code-label">
-            <input type="text" value="" class="jp-code-input" placeholder="输入验证码">
-            00:00:00
-        </label>
         <label class="jp-rate-label">
             播放速率: 
             <input type="text" value="16" class="jp-rate-input">
@@ -281,7 +276,7 @@
             right: 30px;
             bottom: 100px;
             width: 140px;
-            height: 200px;
+            height: 160px;
             display: flex;
             flex-direction: column;
             align-items: center !important;
@@ -309,24 +304,11 @@
             margin-bottom: 6px;
         }
 
-        .jp-code-label {
-            margin-top: 6px;
-            font-size: 8px;
-            color: red;
-        }
-
         .jp-rate-input {
             width: 40px !important;
             height: 25px !important;
             display: inline-block !important;
             background-color: rgb(185, 226, 226) !important;
-        }
-
-        .jp-code-input {
-            width: 80px !important;
-            height: 25px !important;
-            font-size:10px !important;
-            display: inline-block !important;
         }
 
         .jp-play-btn {
@@ -402,13 +384,6 @@
                 resumePlayer();
             }
         }
-    }
-
-    function requestAuthData(code, callback) {
-        let t = setTimeout(() => {
-            console.log('获取到数据');
-            clearTimeout(t);
-        }, 2000);
     }
 
     console.log('Welcome to use ef_video script!');
