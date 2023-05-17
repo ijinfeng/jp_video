@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name         国开大学网课一网一平台视频自动化播放，快进，解放你的双手
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      1.0
 // @description  支持最高16倍倍速播放，播完后自动播放下一集
-// @author       ijinfeng
+// @author       jinfeng
 // @match        *://menhu.pt.ouchn.cn/*
 // @match        *://lms.ouchn.cn/course/*
-// @match        *.baidu.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=baidu.
 // @grant        GM_addStyle
 // @grant        GM_log
@@ -17,8 +16,6 @@
 (function () {
     // 通过脚本点击开始播放
     let startPlay = false;
-    // 是否点击了左侧的条目
-    let clickItem = false
     // 当前的播放对象(视频专题)
     let currentPlayObj = null;
     // 最高播放速率
@@ -131,7 +128,6 @@
         const item = currentPlayObj.items[index];
         currentPlayObj.current = item;
 
-        clickItem = true;
         let clickEvent = new Event('click');
         item.querySelector('.activity-menu-item').dispatchEvent(clickEvent);
 
@@ -253,8 +249,12 @@
         box.className = 'jp-box';
         box.innerHTML = `
         <p class="jp-title">国开网课脚本</p>
-        <label for="rate" class="jp-rate-label">
-            倍数
+        <label class="jp-code-label">
+            <input type="text" value="" class="jp-code-input" placeholder="输入验证码">
+            00:00:00
+        </label>
+        <label class="jp-rate-label">
+            播放速率: 
             <input type="text" value="16" class="jp-rate-input">
         </label>
         <button class="jp-play-btn" id="jp-play1">从最新项开始播放</button>
@@ -281,7 +281,7 @@
             right: 30px;
             bottom: 100px;
             width: 140px;
-            height: 170px;
+            height: 200px;
             display: flex;
             flex-direction: column;
             align-items: center !important;
@@ -309,6 +309,12 @@
             margin-bottom: 6px;
         }
 
+        .jp-code-label {
+            margin-top: 6px;
+            font-size: 8px;
+            color: red;
+        }
+
         .jp-rate-input {
             width: 40px !important;
             height: 25px !important;
@@ -316,8 +322,19 @@
             background-color: rgb(185, 226, 226) !important;
         }
 
+        .jp-code-input {
+            width: 80px !important;
+            height: 25px !important;
+            font-size:10px !important;
+            display: inline-block !important;
+        }
+
         .jp-play-btn {
             font-size: 12px !important;
+            height: 20px;
+            line-height: 20px;
+            padding: 0 16px;
+            margin-bottom: 5px;
         }
         `
         GM_addStyle(css)
@@ -385,8 +402,13 @@
                 resumePlayer();
             }
         }
-        // unsafeWindow.onfocus = function () {
-        // }
+    }
+
+    function requestAuthData(code, callback) {
+        let t = setTimeout(() => {
+            console.log('获取到数据');
+            clearTimeout(t);
+        }, 2000);
     }
 
     console.log('Welcome to use ef_video script!');
